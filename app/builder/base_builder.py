@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Iterable, List, Optional
 
 from commons.database import Database
+from commons.decorators import time_it
 
 
 class Pipeline:
@@ -14,6 +15,7 @@ class Pipeline:
     def add(self, query: str):
         self._queries.append(query + ";")
 
+    @time_it
     def execute(self, session: Database):
         with session:
             for query in self._queries:
