@@ -7,7 +7,7 @@ from builder.customer_builder import CustomerBuilder
 from builder.exchange_rate_builder import ExchangeRateBuilder
 from builder.transaction_builder import TransactionBuilder
 from commons.database import Database
-from executor import Executor
+from pipeline_director import PipelineDirector
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -34,9 +34,9 @@ def cli():
 @click.option("--file_path", required=True)
 def customer_csv_cli(file_path: str):
     builder = CustomerBuilder(filepath=file_path)
-    executor = Executor(builder)
-    executor.construct()
-    executor.execute(session)
+    director = PipelineDirector(builder)
+    pipeline = director.construct()
+    pipeline.execute(session)
 
 
 @cli.command(
@@ -45,9 +45,9 @@ def customer_csv_cli(file_path: str):
 @click.option("--file_path", required=True)
 def transaction_csv_cli(file_path: str):
     builder = TransactionBuilder(filepath=file_path)
-    executor = Executor(builder)
-    executor.construct()
-    executor.execute(session)
+    director = PipelineDirector(builder)
+    pipeline = director.construct()
+    pipeline.execute(session)
 
 
 @cli.command(
@@ -56,9 +56,9 @@ def transaction_csv_cli(file_path: str):
 @click.option("--file_path", required=True)
 def exchange_rate_csv_cli(file_path: str):
     builder = ExchangeRateBuilder(filepath=file_path)
-    executor = Executor(builder)
-    executor.construct()
-    executor.execute(session)
+    director = PipelineDirector(builder)
+    pipeline = director.construct()
+    pipeline.execute(session)
 
 
 if __name__ == "__main__":

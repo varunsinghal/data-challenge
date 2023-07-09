@@ -11,9 +11,11 @@ from commons.helpers import (
 
 
 class PgSQLBuilder(BaseBuilder):
-    def build_staging(self, filepath: str):
+    def build_staging(self):
         self.pipeline.add(
-            copy_csv_to_table(self.staging_table, self.staging_fields, filepath)
+            copy_csv_to_table(
+                self.staging_table, self.staging_fields, self.filepath
+            )
         )
 
     def build_dedup(self):

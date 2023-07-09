@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Iterable, List, Optional
 
+from commons.database import Database
+
 
 class Pipeline:
     def __init__(self):
@@ -11,6 +13,11 @@ class Pipeline:
 
     def add(self, query: str):
         self._queries.append(query + ";")
+
+    def execute(self, session: Database):
+        with session:
+            for query in self._queries:
+                session.execute(query)
 
 
 class BaseBuilder(ABC):
@@ -38,7 +45,7 @@ class BaseBuilder(ABC):
         self.pipeline = Pipeline()
 
     @abstractmethod
-    def build_staging(self, filepath: str):
+    def build_staging(self):
         pass
 
     @abstractmethod
@@ -64,13 +71,3 @@ class BaseBuilder(ABC):
     def build_extras(self):
         for sql in self.extra_sqls:
             self.pipeline.add(sql)
-
-    def construct(self) -> Pipeline:
-        self.build_staging(self.filepath)
-        self.build_dedup()
-        self.build_checks()
-        self.build_dimensions()
-        self.build_target()
-        self.build_extras()
-        self.build_cleanup()
-        return self.pipeline
