@@ -1,0 +1,35 @@
+version: "3.3"
+
+services:
+  app:
+    build:
+      context: app/
+      dockerfile: app.Dockerfile
+    entrypoint: tail -f /dev/null
+    working_dir: /app
+    volumes:
+      - ./app/:/app/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE=app
+      - POSTGRES_HOSTNAME=database
+      - POSTGRES_PORT=5432
+
+  database:
+    image: postgres:11.5-alpine
+    volumes:
+      - "db:/var/lib/postgresql/data"
+      - ./:/app
+    working_dir: /app
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  db:
