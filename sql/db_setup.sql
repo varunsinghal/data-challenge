@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS dim_currency (
 
 CREATE TABLE IF NOT EXISTS map_country_currency (
     map_country_currency_id SERIAL PRIMARY KEY,
-    country_id INTEGER,
-    currency_id INTEGER
+    country_id INTEGER REFERENCES dim_country(country_id),
+    currency_id INTEGER REFERENCES dim_currency(currency_id)
 );
 
 
