@@ -112,10 +112,11 @@ This helps in making the code performant, by allowing me to perform validation a
 <br>
 
 ### SQL
-* Create a view which shows the total amount in EUR, number of transactions and number of unique users per month and country.
-  view name: `transaction_summary_view`
-  file name: `/sql/db_setup.sql`
+* Create a view which shows the total amount in EUR, number of transactions and number of unique users per month and country.\
+  view name: `transaction_summary_view`\
+  file name: `/sql/db_setup.sql` 
 
-* Based on a date, show the evolution of the exchange rate for each currency (based on GBP) in percentage for the next 15 days
-  file name: `/sql/db_setup.sql`
-  view name: `exchange_rate_view`
+* Based on a date, show the evolution of the exchange rate for each currency (based on GBP) in percentage for the next 15 days \
+  view name: `exchange_rate_view` \
+  file name: `/sql/db_setup.sql` 
+  
