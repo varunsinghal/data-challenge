@@ -6,6 +6,7 @@ from commons.helpers import (
     mark_length_gt,
     mark_non_decimal,
     mark_non_integer,
+    replace_text,
     truncate_table,
 )
 
@@ -19,6 +20,16 @@ class PgSQLBuilder(BaseBuilder):
         )
 
     def build_dedup(self):
+        for column, alias in self.replace_aliases.items():
+            for each_alias in alias["aliases"]:
+                self.pipeline.add(
+                    replace_text(
+                        self.staging_table,
+                        column,
+                        new_name=alias["name"],
+                        old_name=each_alias,
+                    )
+                )
         if self.unique_field:
             self.pipeline.add(
                 mark_duplicate(self.staging_table, self.unique_field)

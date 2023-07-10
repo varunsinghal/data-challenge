@@ -47,11 +47,13 @@ class ExchangeRateBuilder(PgSQLBuilder):
 
     target_sql = (
         "insert into "
-        "fact_exchange_rate (from_currency_id, "
+        "fact_exchange_rate (exchange_rate_id, "
+        "from_currency_id, "
         "to_currency_id, "
         "effective_date_id, "
         "rate) "
         "select "
+        "ser.exchange_rate_id, "
         "dcurr1.currency_id, "
         "dcurr2.currency_id, "
         "dcal.date_id, "

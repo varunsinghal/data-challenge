@@ -99,4 +99,86 @@ CREATE TABLE IF NOT EXISTS staging_exchange_rate (
     error_message text
 );
 
+/*
+ * Views
+ */
+
+create or replace
+view transaction_summary_view as
+select 
+	count(customer_id) as unique_customers,
+	sum(count_transaction) as total_transactions,
+	sum(amount) as total_amount,
+	month,
+	year
+from
+	(
+	select
+		dc.customer_id,
+		count(ft.transaction_id) as count_transaction,
+		sum((ft.amount / fer.rate)* fer2.rate) as amount,
+		cal."month" ,
+		cal."year"
+	from
+		fact_transaction ft
+	inner join dim_calendar cal on
+		ft.date_id = cal.date_id
+	inner join dim_customer dc on
+		dc.customer_id = ft.customer_id
+	inner join dim_country dc2 on
+		dc.country_id = dc2.country_id
+	inner join fact_exchange_rate fer on
+		fer.effective_date_id = ft.date_id
+		and fer.to_currency_id = ft.currency_id
+	inner join fact_exchange_rate fer2 on
+		fer2.effective_date_id = ft.date_id
+	inner join dim_currency from_currency 
+	on
+		fer2.from_currency_id = from_currency.currency_id
+		and from_currency.currency_code = 'GBP'
+	inner join dim_currency to_currency 
+	on
+		fer2.to_currency_id = to_currency.currency_id
+		and to_currency.currency_code = 'EUR'
+	group by
+		dc.customer_id,
+		cal.month,
+		cal.year,
+		dc2.country_name 
+		) A
+group by 
+	month,
+	year ;
+
+
+
+CREATE OR REPLACE VIEW exchange_rate_view AS
+select
+	dc2.currency_code,
+	cal.date,
+	cal.date_id,
+	rate,
+	rate_next_day,
+	((rate_next_day - rate) / rate) * 100 as percentage_change
+from
+	(
+	select
+		to_currency_id,
+		effective_date_id,
+		rate,
+		lead(rate, 1) over (partition by to_currency_id
+	order by
+		effective_date_id) as rate_next_day
+	from
+		fact_exchange_rate fer
+		)
+       as A
+inner join dim_currency dc2 on
+	dc2.currency_id = A.to_currency_id
+inner join dim_calendar cal on 
+	cal.date_id = A.effective_date_id
+where dc2.currency_code <> 'GBP';
+
+
+
 end;

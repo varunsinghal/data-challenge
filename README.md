@@ -68,7 +68,7 @@
 **_Design a relational data model to represent the given datasets. It should be optimized for analytical purposes._**
 
 ![ER diagram](/resources/er-diagram.png)
-
+file name: /sql/db_setup.sql
 
 **_Explain the modeling approach taken. Is there any alternative to the model chosen (trade-offs, limitations, advantages)?_**
 
@@ -113,6 +113,9 @@ This helps in making the code performant, by allowing me to perform validation a
 
 ### SQL
 * Create a view which shows the total amount in EUR, number of transactions and number of unique users per month and country.
+  view name: `transaction_summary_view`
+  file name: `/sql/db_setup.sql`
 
 * Based on a date, show the evolution of the exchange rate for each currency (based on GBP) in percentage for the next 15 days
-
+  file name: `/sql/db_setup.sql`
+  view name: `exchange_rate_view`

@@ -4,13 +4,24 @@ ERROR_COLUMN = "error_message"
 ROW_ID_COLUMN = "row_id"
 
 
-def copy_csv_to_table(table_name: str, columns: List[str], filepath: str):
+def copy_csv_to_table(
+    table_name: str, columns: List[str], filepath: str
+) -> str:
     joined_columns = ", ".join(columns)
     return (
         f"copy {table_name} ({joined_columns}) "
         f"from '{filepath}'"
         "delimiter ','"
         "csv header"
+    )
+
+
+def replace_text(
+    table_name: str, column: str, new_name: str, old_name: str
+) -> str:
+    return (
+        f"update {table_name} "
+        f"set {column} = REPLACE({column}, '{old_name}', '{new_name}')"
     )
 
 
@@ -40,7 +51,8 @@ def mark_duplicate(table_name: str, unique_column: str) -> str:
 def mark_non_integer(table_name: str, column_name: str) -> str:
     return (
         f"update {table_name} "
-        f"set {ERROR_COLUMN} = concat({ERROR_COLUMN}, 'Invalid customer age;')"
+        f"set {ERROR_COLUMN} = "
+        f"concat({ERROR_COLUMN}, 'Non integer {column_name};')"
         f"where {column_name} ~ '[^0-9]'"
     )
 
@@ -48,7 +60,8 @@ def mark_non_integer(table_name: str, column_name: str) -> str:
 def mark_non_decimal(table_name: str, column_name: str) -> str:
     return (
         f"update {table_name} "
-        f"set {ERROR_COLUMN} = concat({ERROR_COLUMN}, 'Invalid customer age;')"
+        f"set {ERROR_COLUMN} = "
+        f"concat({ERROR_COLUMN}, 'Non decimal {column_name};')"
         rf"where {column_name} ~ '[^\-0-9.]'"
     )
 

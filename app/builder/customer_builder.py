@@ -12,6 +12,14 @@ class CustomerBuilder(PgSQLBuilder):
     max_length_fields = {
         StagingCustomer.customer_gender: 10,
     }
+    replace_aliases = {
+        StagingCustomer.country: {
+            "name": "USA",
+            "aliases": [
+                "United States",
+            ],
+        }
+    }
 
     dimension_sqls = [
         (

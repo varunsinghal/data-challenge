@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, TypedDict
 
 from commons.database import Database
 from commons.decorators import time_it
@@ -22,6 +22,11 @@ class Pipeline:
                 session.execute(query)
 
 
+class Alias(TypedDict):
+    name: str
+    aliases: List[str]
+
+
 class BaseBuilder(ABC):
     row_id_field: str = "row_id"
     error_field: str = "error_message"
@@ -34,6 +39,7 @@ class BaseBuilder(ABC):
     decimal_fields: List[str] = []
     max_length_fields: Dict[str, int] = {}
     allowed_field_values: Dict[str, List] = {}
+    replace_aliases: Dict[str, Alias] = {}
 
     dimension_sqls: List[str] = []
     target_sql: Optional[str] = None
